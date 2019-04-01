@@ -11,6 +11,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// ItemInfo godoc
+type ItemInfo struct {
+	Name   string   `bson:"name" json:"name" example:"scale"`
+	Fields []string `bson:"fields" json:"fields"`
+}
+
 //Errors godoc
 var (
 	ErrNameInvalid = errors.New("name is empty")
