@@ -27,7 +27,7 @@ func Connect(uri string) {
 
 	auth := options.Credential{
 		Username:    "root",
-		Password:    "t0p5ecret",
+		Password:    "password",
 		PasswordSet: true,
 	}
 

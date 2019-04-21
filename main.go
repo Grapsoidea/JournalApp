@@ -42,13 +42,21 @@ func main() {
 
 	v1 := router.Group("/api/v1")
 	{
-		itemScheme := v1.Group("/scheme")
+		itemScheme := v1.Group("/scheme/item")
 		{
-			itemScheme.GET("/item", c.GetItemSchemes)
-			itemScheme.GET("/item/:itemscheme_id", c.GetItemScheme)
-			itemScheme.POST("/item", c.NewItemScheme)
-			itemScheme.PUT("/item/:itemscheme_id", c.UpdateItemScheme)
-			itemScheme.DELETE("/item/:itemscheme_id", c.DeleteItemScheme)
+			itemScheme.GET("", c.GetItemSchemes)
+			itemScheme.GET(":itemscheme_id", c.GetItemScheme)
+			itemScheme.POST("", c.NewItemScheme)
+			itemScheme.PUT(":itemscheme_id", c.UpdateItemScheme)
+			itemScheme.DELETE(":itemscheme_id", c.DeleteItemScheme)
+		}
+		journalScheme := v1.Group("/scheme/journal")
+		{
+			journalScheme.GET("", c.GetJournalSchemes)
+			journalScheme.GET(":journalscheme_id", c.GetJournalScheme)
+			journalScheme.POST("", c.NewJournalScheme)
+			journalScheme.PUT(":journalscheme_id", c.UpdateJournalScheme)
+			journalScheme.DELETE(":journalscheme_id", c.DeleteJournalScheme)
 		}
 		login := v1.Group("/login")
 		{
