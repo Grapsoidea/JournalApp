@@ -21,8 +21,8 @@ type JournalComputed struct {
 	Field string `bson:"field" json:"field" example:"result"`
 
 	// Norm Если type deviation
-	Norm      *string `bson:"norm,omitempty" json:"norm,omitempty" example:"giri_w"`                 // Нормальный вес
-	Deviation *string `bson:"devetion,omitempty" json:"devetion,omitempty" example:"norm_deviation"` // Допустимое отклонение
+	Norm      *string `bson:"norm,omitempty" json:"norm,omitempty" example:"giri_w"`                   // Нормальный вес
+	Deviation *string `bson:"deviation,omitempty" json:"deviation,omitempty" example:"norm_deviation"` // Допустимое отклонение
 
 	// Range Если type range
 	Range *[2]string `bson:"range,omitempty" json:"range,omitempty" example:""` // Допустимы предел
