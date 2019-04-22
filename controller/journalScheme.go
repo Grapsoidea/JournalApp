@@ -33,7 +33,7 @@ func (c *Controller) GetJournalSchemes(ctx *gin.Context) {
 // @Tags JournalScheme
 // @Accept  json
 // @Produce  json
-// @Param journalscheme_id path string true "JournalSheme id"
+// @Param journalscheme_id path string true "JournalScheme id"
 // @Success 200 {object} model.JournalScheme
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
@@ -121,7 +121,7 @@ func (c *Controller) UpdateJournalScheme(ctx *gin.Context) {
 // @Tags JournalScheme
 // @Accept  json
 // @Produce  json
-// @Param Journalscheme_id path string true "JournalSheme id"
+// @Param Journalscheme_id path string true "JournalScheme id"
 // @Success 200 {object} model.JournalScheme
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError

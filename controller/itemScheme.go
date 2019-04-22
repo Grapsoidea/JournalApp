@@ -33,7 +33,7 @@ func (c *Controller) GetItemSchemes(ctx *gin.Context) {
 // @Tags ItemScheme
 // @Accept  json
 // @Produce  json
-// @Param itemscheme_id path string true "ItemSheme id"
+// @Param itemscheme_id path string true "ItemScheme id"
 // @Success 200 {object} model.ItemScheme
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
@@ -86,7 +86,7 @@ func (c *Controller) NewItemScheme(ctx *gin.Context) {
 // @Tags ItemScheme
 // @Accept  json
 // @Produce  json
-// @Param itemscheme_id path string true "ItemSheme id"
+// @Param itemscheme_id path string true "ItemScheme id"
 // @Param UpdateItemScheme body model.ItemScheme true "Update Item Scheme"
 // @Success 200 {object} model.ItemScheme
 // @Failure 400 {object} httputils.HTTPError
@@ -121,7 +121,7 @@ func (c *Controller) UpdateItemScheme(ctx *gin.Context) {
 // @Tags ItemScheme
 // @Accept  json
 // @Produce  json
-// @Param itemscheme_id path string true "ItemSheme id"
+// @Param itemscheme_id path string true "ItemScheme id"
 // @Success 200 {object} model.ItemScheme
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
