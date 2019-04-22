@@ -58,6 +58,14 @@ func main() {
 			journalScheme.PUT(":journalscheme_id", c.UpdateJournalScheme)
 			journalScheme.DELETE(":journalscheme_id", c.DeleteJournalScheme)
 		}
+		reportScheme := v1.Group("/scheme/report")
+		{
+			reportScheme.GET("", c.GetReportSchemes)
+			reportScheme.GET(":reportscheme_id", c.GetReportScheme)
+			reportScheme.POST("", c.NewReportScheme)
+			reportScheme.PUT(":reportscheme_id", c.UpdateReportScheme)
+			reportScheme.DELETE(":reportscheme_id", c.DeleteReportScheme)
+		}
 		login := v1.Group("/login")
 		{
 			login.POST("", c.Auth)
