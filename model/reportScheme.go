@@ -26,7 +26,7 @@ type ReportScheme struct {
 	Deleted bool               `bson:"deleted" json:"-"`
 }
 
-// ReportScheme godoc
+// NewReportScheme godoc
 type NewReportScheme struct {
 	Name    string        `bson:"name" json:"name" example:"scales_calibration"`
 	Title   string        `bson:"title" json:"title" example:"Учет и калибровка весов"`
@@ -35,7 +35,7 @@ type NewReportScheme struct {
 	Deleted bool          `bson:"deleted" json:"-"`
 }
 
-// ReportScheme godoc
+// UpdateReportScheme godoc
 type UpdateReportScheme struct {
 	Name    string        `bson:"name" json:"name" example:"scales_calibration"`
 	Title   string        `bson:"title" json:"title" example:"Учет и калибровка весов"`
@@ -80,13 +80,13 @@ func ReportSchemeAll() ([]ReportScheme, error) {
 
 //ReportSchemeOne get list report schemes with id godoc
 func ReportSchemeOne(id string) (ReportScheme, error) {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return ReportScheme{}, err
 	}
 	row := new(ReportScheme)
-	err = ReportSchemeCollection().FindOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", ojectID}}, bson.D{{"deleted", false}}}}}).Decode(&row)
+	err = ReportSchemeCollection().FindOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", objectID}}, bson.D{{"deleted", false}}}}}).Decode(&row)
 	if err != nil {
 		log.Println(err)
 		return ReportScheme{}, err
@@ -118,12 +118,12 @@ func (s NewReportScheme) Validation() error {
 
 // Update godoc
 func (s UpdateReportScheme) Update(id string) error {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	updateResault, err := ReportSchemeCollection().UpdateOne(context.Background(), bson.D{{"_id", ojectID}}, bson.D{{"$set", s}})
+	updateResault, err := ReportSchemeCollection().UpdateOne(context.Background(), bson.D{{"_id", objectID}}, bson.D{{"$set", s}})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -144,12 +144,12 @@ func (s UpdateReportScheme) Validation() error {
 
 // DeleteReportSchemeOne godoc
 func DeleteReportSchemeOne(id string) error {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	updateResault, err := ReportSchemeCollection().UpdateOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", ojectID}}, bson.D{{"deleted", false}}}}}, bson.D{{"$set", bson.D{{"deleted", true}}}})
+	updateResault, err := ReportSchemeCollection().UpdateOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", objectID}}, bson.D{{"deleted", false}}}}}, bson.D{{"$set", bson.D{{"deleted", true}}}})
 	if err != nil {
 		log.Println(err)
 		return err

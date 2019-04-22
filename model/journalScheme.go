@@ -134,13 +134,13 @@ func JournalSchemeAll() ([]JournalScheme, error) {
 
 //JournalSchemeOne get list journal schemes with id godoc
 func JournalSchemeOne(id string) (JournalScheme, error) {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return JournalScheme{}, err
 	}
 	row := new(JournalScheme)
-	err = JournalSchemeCollection().FindOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", ojectID}}, bson.D{{"deleted", false}}}}}).Decode(&row)
+	err = JournalSchemeCollection().FindOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", objectID}}, bson.D{{"deleted", false}}}}}).Decode(&row)
 	if err != nil {
 		log.Println(err)
 		return JournalScheme{}, err
@@ -172,12 +172,12 @@ func (s NewJournalScheme) Validation() error {
 
 // Update godoc
 func (s UpdateJournalScheme) Update(id string) error {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	updateResault, err := JournalSchemeCollection().UpdateOne(context.Background(), bson.D{{"_id", ojectID}}, bson.D{{"$set", s}})
+	updateResault, err := JournalSchemeCollection().UpdateOne(context.Background(), bson.D{{"_id", objectID}}, bson.D{{"$set", s}})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -198,12 +198,12 @@ func (s UpdateJournalScheme) Validation() error {
 
 // DeleteJournalSchemeOne godoc
 func DeleteJournalSchemeOne(id string) error {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	updateResault, err := JournalSchemeCollection().UpdateOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", ojectID}}, bson.D{{"deleted", false}}}}}, bson.D{{"$set", bson.D{{"deleted", true}}}})
+	updateResault, err := JournalSchemeCollection().UpdateOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", objectID}}, bson.D{{"deleted", false}}}}}, bson.D{{"$set", bson.D{{"deleted", true}}}})
 	if err != nil {
 		log.Println(err)
 		return err

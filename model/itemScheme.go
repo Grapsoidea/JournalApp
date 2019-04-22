@@ -67,12 +67,12 @@ func (s NewItemScheme) Insert() error {
 
 // Update godoc
 func (s UpdateItemScheme) Update(id string) error {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	updateResault, err := ItemSchemeCollection().UpdateOne(context.Background(), bson.D{{"_id", ojectID}}, bson.D{{"$set", s}})
+	updateResault, err := ItemSchemeCollection().UpdateOne(context.Background(), bson.D{{"_id", objectID}}, bson.D{{"$set", s}})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -173,13 +173,13 @@ func ItemSchemeAll() ([]ItemScheme, error) {
 
 //ItemSchemeOne get list item schemes with id godoc
 func ItemSchemeOne(id string) (ItemScheme, error) {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return ItemScheme{}, err
 	}
 	row := new(ItemScheme)
-	err = ItemSchemeCollection().FindOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", ojectID}}, bson.D{{"deleted", false}}}}}).Decode(&row)
+	err = ItemSchemeCollection().FindOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", objectID}}, bson.D{{"deleted", false}}}}}).Decode(&row)
 	if err != nil {
 		log.Println(err)
 		return ItemScheme{}, err
@@ -190,12 +190,12 @@ func ItemSchemeOne(id string) (ItemScheme, error) {
 
 // DeleteSchemeOne godoc
 func DeleteSchemeOne(id string) error {
-	ojectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	updateResault, err := ItemSchemeCollection().UpdateOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", ojectID}}, bson.D{{"deleted", false}}}}}, bson.D{{"$set", bson.D{{"deleted", true}}}})
+	updateResault, err := ItemSchemeCollection().UpdateOne(context.Background(), bson.D{{"$and", bson.A{bson.D{{"_id", objectID}}, bson.D{{"deleted", false}}}}}, bson.D{{"$set", bson.D{{"deleted", true}}}})
 	if err != nil {
 		log.Println(err)
 		return err

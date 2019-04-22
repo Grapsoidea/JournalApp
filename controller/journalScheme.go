@@ -122,7 +122,7 @@ func (c *Controller) UpdateJournalScheme(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param Journalscheme_id path string true "JournalScheme id"
-// @Success 200 {object} model.JournalScheme
+// @Success 200 {string} string    "5ca10d9d015c736a72b7b3ba"
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError

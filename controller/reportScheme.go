@@ -122,7 +122,7 @@ func (c *Controller) UpdateReportScheme(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param Reportscheme_id path string true "ReportSheme id"
-// @Success 200 {object} model.ReportScheme
+// @Success 200 {string} string    "5ca10d9d015c736a72b7b3ba"
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError
