@@ -17,9 +17,24 @@ type ItemInfo struct {
 	Fields []string `bson:"fields" json:"fields"`
 }
 
+func CheckIn(el string, list []string) bool{
+	for i:=0; i<len(list); i++{
+		if el == list[i]{
+			return true
+		}
+	}
+	return false
+}
+
 //Errors godoc
 var (
+	ErrIDInvalid = errors.New("ID is empty")
 	ErrNameInvalid = errors.New("name is empty")
+	ErrTitleInvalid = errors.New("title is empty")
+	ErrDeletedInvalid = errors.New("deleted is true")
+	ErrFieldsInvalid = errors.New("err in Fields")
+	ErrFieldsNameInvalid = errors.New("Fields Name is empty")
+	ErrFieldsTypeInvalid = errors.New("type Name is empty")
 )
 
 // ItemField godoc
@@ -83,9 +98,30 @@ func (s UpdateItemScheme) Update(id string) error {
 
 // Validation godoc
 func (s NewItemScheme) Validation() error {
+	Types := []string{"Integer", "Dooble", "String", "Boolean", "Array", "Signature", "Date", "ObjectId"}
 	switch {
 	case len(s.Name) == 0:
 		return ErrNameInvalid
+	case len(s.Title) == 0:
+		return ErrTitleInvalid
+	case s.Deleted == true:
+		return ErrDeletedInvalid
+	case s.Fields == nil:
+		return ErrFieldsInvalid
+	case s.Fields != nil:
+		for i:= 0; i < len(s.Fields); i++ {
+			switch { 
+				case len(s.Fields[i].Name) == 0:
+					return ErrFieldsInvalid
+				case len(s.Fields[i].Title) == 0:
+					return ErrFieldsInvalid
+				case len(s.Fields[i].Type) == 0:
+					return ErrFieldsInvalid
+				case !(CheckIn(s.Fields[i].Type, Types)):
+					return ErrTypeInvalid
+			}
+		}
+		return nil
 	default:
 		return nil
 	}
@@ -93,9 +129,30 @@ func (s NewItemScheme) Validation() error {
 
 // Validation godoc
 func (s UpdateItemScheme) Validation() error {
+	Types := []string{"Integer", "Dooble", "String", "Boolean", "Array", "Signature", "Date", "ObjectId"}
 	switch {
 	case len(s.Name) == 0:
 		return ErrNameInvalid
+	case len(s.Title) == 0:
+		return ErrTitleInvalid
+	case s.Deleted == true:
+		return ErrDeletedInvalid
+	case s.Fields == nil:
+		return ErrFieldsInvalid
+	case s.Fields != nil:
+		for i:= 0; i < len(s.Fields); i++ {
+			switch { 
+				case len(s.Fields[i].Name) == 0:
+					return ErrFieldsInvalid
+				case len(s.Fields[i].Title) == 0:
+					return ErrFieldsInvalid
+				case len(s.Fields[i].Type) == 0:
+					return ErrFieldsInvalid
+				case !(CheckIn(s.Fields[i].Type, Types)):
+					return ErrTypeInvalid
+			}
+		}
+		return nil
 	default:
 		return nil
 	}

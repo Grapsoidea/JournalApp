@@ -2,12 +2,20 @@ package model
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/Oxynger/JournalApp/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+)
+
+//Errors godoc
+var (
+	ErrJournalInvalid = errors.New("journal is empty")
+	ErrFieldsTitleInvalid = errors.New("field title is empty")
+	ErrFieldsValueInvalid = errors.New("field value is empty")
 )
 
 // ReportField godoc
@@ -111,6 +119,24 @@ func (s NewReportScheme) Validation() error {
 	switch {
 	case len(s.Name) == 0:
 		return ErrNameInvalid
+	case len(s.Title) == 0:
+		return ErrTitleInvalid
+	case len(s.Journal) == 0:
+		return ErrJournalInvalid
+	case s.Deleted == true:
+		return ErrDeletedInvalid
+	case s.Fields == nil:
+		return ErrFieldsInvalid
+	case s.Fields != nil:
+		for i:= 0; i < len(s.Fields); i++ {
+			switch { 
+				case len(s.Fields[i].Title) == 0:
+					return ErrFieldsTitleInvalid
+				case len(s.Fields[i].Value) == 0:
+					return ErrFieldsValueInvalid
+			}
+		}
+		return nil
 	default:
 		return nil
 	}

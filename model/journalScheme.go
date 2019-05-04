@@ -2,12 +2,31 @@ package model
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/Oxynger/JournalApp/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+)
+
+//Errors godoc
+var (
+	ErrDailyInvalid = errors.New("Daily is empty")
+	ErrFixedInvalid = errors.New("Fixed is empty")
+	ErrItemInvalid = errors.New("Item is empty")
+	ErrItemInfoInvalid = errors.New("ItemInfo is empty")
+	ErrComputedInvalid = errors.New("computed is bad")
+	ErrDeviatonTypeInvalid = errors.New("error in deviaton type")
+	ErrRangeTypeInvalid = errors.New("error in range type")
+	ErrEqualsTypeInvalid = errors.New("error in equals type")
+	ErrLessTypeInvalid = errors.New("error in less type")
+	ErrMoreTypeInvalid = errors.New("error in more type")
+	ErrMore_ThanTypeInvalid = errors.New("error in more_than type")
+	ErrIfInvalid = errors.New("error in if field")
+	ErrComputedTypeInvalid = errors.New("Computed Type isn't exits")
+	ErrTypeInvalid = errors.New("Type isn't exits")
 )
 
 // JournalIf godoc
@@ -25,7 +44,7 @@ type JournalComputed struct {
 	Deviation *string `bson:"deviation,omitempty" json:"deviation,omitempty" example:"norm_deviation"` // Допустимое отклонение
 
 	// Range Если type range
-	Range *[2]string `bson:"range,omitempty" json:"range,omitempty" example:""` // Допустимы предел
+	Range *string `bson:"range,omitempty" json:"range,omitempty" example:""` // Допустимы предел
 
 	// Value Если type equals
 	Value *string `bson:"value,omitempty" json:"value,omitempty" example:""` // Значение, которому должно быть равно
@@ -42,8 +61,8 @@ type JournalComputed struct {
 
 	// Enum Если type enum
 
-	// Массив допустимых значений. Если выбранное
-	// значение не принадлежит данному массиву, то
+	// Массив допустимых значений. Если выбранное || len(s.Fields[i].Computed.Field) == 0
+	// значение не принадлежит данному массиву, т || len(s.Fields[i].Computed.Field) == 0
 	// check = false
 	Enum *[]string `bson:"enum,omitempty" json:"enum,omitempty" example:""`
 }
@@ -57,7 +76,7 @@ type JournalField struct {
 	// Computed вычесляемое поле с переменным количеством полей
 	Computed *JournalComputed `bson:"computed,omitempty" json:"computed,omitempty"`
 
-	// If непонятно какое условие
+	// If условие при котором будут отображаться дополнительные поля
 	If *JournalIf `bson:"if,omitempty" json:"if,omitempty"`
 }
 
@@ -162,9 +181,74 @@ func (s NewJournalScheme) Insert() error {
 
 // Validation godoc
 func (s NewJournalScheme) Validation() error {
+	ComputedTypes := []string{"deviation","range","equals","less","more","more_than"}
+	Types := []string{"Integer", "Dooble", "String", "Boolean", "Array", "Signature", "Date", "ObjectId"}
 	switch {
 	case len(s.Name) == 0:
 		return ErrNameInvalid
+	case len(s.Title) == 0:
+		return ErrTitleInvalid
+	// case s.Daily == nil:
+	// 	return ErrDailyInvalid
+	// case s.Fixed == nil:
+	// 	return ErrFixedInvalid
+	case len(s.Item) == 0:
+		return ErrItemInvalid
+	case s.ItemInfo == nil:
+		return ErrItemInfoInvalid
+	case s.Deleted == true:
+		return ErrDeletedInvalid
+	case s.Fields == nil:
+		return ErrFieldsInvalid
+	case s.Fields != nil:
+		for i:= 0; i < len(s.Fields); i++ {
+			switch { 
+				case len(s.Fields[i].Name) == 0:
+					return ErrFieldsNameInvalid
+				case len(s.Fields[i].Title) == 0:
+					return ErrFieldsTitleInvalid
+				case len(s.Fields[i].Type) == 0:
+					return ErrFieldsTypeInvalid
+				case !(CheckIn(s.Fields[i].Type, Types)):
+					return ErrTypeInvalid
+				case s.Fields[i].Computed != nil || s.Fields[i].If != nil:
+					if s.Fields[i].Computed != nil {
+						switch {
+						case len(s.Fields[i].Computed.Type) == 0:
+							return ErrComputedInvalid
+						case len(s.Fields[i].Computed.Field) == 0:
+							return ErrComputedInvalid
+						case s.Fields[i].Computed.Type == "deviation" && (s.Fields[i].Computed.Deviation == nil || s.Fields[i].Computed.Norm == nil):
+							return ErrDeviatonTypeInvalid
+						case s.Fields[i].Computed.Type == "range" && (s.Fields[i].Computed.Range == nil):
+							return ErrRangeTypeInvalid
+						case s.Fields[i].Computed.Type == "equals" && (s.Fields[i].Computed.Value == nil):
+							return ErrEqualsTypeInvalid
+						case s.Fields[i].Computed.Type == "less" && (s.Fields[i].Computed.Max == nil):
+							return ErrLessTypeInvalid
+						case s.Fields[i].Computed.Type == "more" && (s.Fields[i].Computed.Min == nil):
+							return ErrMoreTypeInvalid
+						case s.Fields[i].Computed.Type == "more_than" && (s.Fields[i].Computed.ID == nil || s.Fields[i].Computed.On == nil):
+							return ErrMore_ThanTypeInvalid
+						case !(CheckIn(s.Fields[i].Computed.Type, ComputedTypes)):
+							return ErrComputedTypeInvalid
+						} 
+					}
+					if s.Fields[i].If != nil{	
+						if s.Fields[i].If.Fields == nil{
+							return ErrIfInvalid
+						}
+						for k:= 0; k < len(s.Fields[i].If.Fields); k++ {
+							if len(s.Fields[i].If.Fields[k]) == 0{
+								return ErrIfInvalid
+							}
+						}
+
+						
+					}
+			}
+		}
+		return nil
 	default:
 		return nil
 	}
@@ -188,9 +272,74 @@ func (s UpdateJournalScheme) Update(id string) error {
 
 // Validation godoc
 func (s UpdateJournalScheme) Validation() error {
+	ComputedTypes := []string{"deviation","range","equals","less","more","more_than"}
+	Types := []string{"Integer", "Dooble", "String", "Boolean", "Array", "Signature", "Date", "ObjectId"}
 	switch {
 	case len(s.Name) == 0:
 		return ErrNameInvalid
+	case len(s.Title) == 0:
+		return ErrTitleInvalid
+	// case s.Daily == nil:
+	// 	return ErrDailyInvalid
+	// case s.Fixed == nil:
+	// 	return ErrFixedInvalid
+	case len(s.Item) == 0:
+		return ErrItemInvalid
+	case s.ItemInfo == nil:
+		return ErrItemInfoInvalid
+	case s.Deleted == true:
+		return ErrDeletedInvalid
+	case s.Fields == nil:
+		return ErrFieldsInvalid
+	case s.Fields != nil:
+		for i:= 0; i < len(s.Fields); i++ {
+			switch { 
+				case len(s.Fields[i].Name) == 0:
+					return ErrFieldsNameInvalid
+				case len(s.Fields[i].Title) == 0:
+					return ErrFieldsTitleInvalid
+				case len(s.Fields[i].Type) == 0:
+					return ErrFieldsTypeInvalid
+				case !(CheckIn(s.Fields[i].Type, Types)):
+					return ErrTypeInvalid
+				case s.Fields[i].Computed != nil || s.Fields[i].If != nil:
+					if s.Fields[i].Computed != nil {
+						switch {
+						case len(s.Fields[i].Computed.Type) == 0:
+							return ErrComputedInvalid
+						case len(s.Fields[i].Computed.Field) == 0:
+							return ErrComputedInvalid
+						case s.Fields[i].Computed.Type == "deviation" && (s.Fields[i].Computed.Deviation == nil || s.Fields[i].Computed.Norm == nil):
+							return ErrDeviatonTypeInvalid
+						case s.Fields[i].Computed.Type == "range" && (s.Fields[i].Computed.Range == nil):
+							return ErrRangeTypeInvalid
+						case s.Fields[i].Computed.Type == "equals" && (s.Fields[i].Computed.Value == nil):
+							return ErrEqualsTypeInvalid
+						case s.Fields[i].Computed.Type == "less" && (s.Fields[i].Computed.Max == nil):
+							return ErrLessTypeInvalid
+						case s.Fields[i].Computed.Type == "more" && (s.Fields[i].Computed.Min == nil):
+							return ErrMoreTypeInvalid
+						case s.Fields[i].Computed.Type == "more_than" && (s.Fields[i].Computed.ID == nil || s.Fields[i].Computed.On == nil):
+							return ErrMore_ThanTypeInvalid
+						case !(CheckIn(s.Fields[i].Computed.Type, ComputedTypes)):
+							return ErrComputedTypeInvalid
+						} 
+					}
+					if s.Fields[i].If != nil{	
+						if s.Fields[i].If.Fields == nil{
+							return ErrIfInvalid
+						}
+						for k:= 0; k < len(s.Fields[i].If.Fields); k++ {
+							if len(s.Fields[i].If.Fields[k]) == 0{
+								return ErrIfInvalid
+							}
+						}
+
+						
+					}
+			}
+		}
+		return nil
 	default:
 		return nil
 	}
