@@ -14,12 +14,16 @@ import (
 // @Tags JournalScheme
 // @Accept  json
 // @Produce  json
+// @Param offset path string true "Offset"
+// @Param limit path string true "Limit"
 // @Success 200 {array} model.JournalScheme
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError
-// @Router /scheme/journal [get]
+// @Router /scheme/journal/getall/offset}/{limit} [get]
 func (c *Controller) GetJournalSchemes(ctx *gin.Context) {
-	schemes, err := model.JournalSchemeAll()
+	offset := ctx.Param("offset")
+	limit := ctx.Param("limit")
+	schemes, err := model.JournalSchemeAll(offset, limit)
 	if err != nil {
 		httputils.NewError(ctx, http.StatusNotFound, err)
 		return
@@ -38,7 +42,7 @@ func (c *Controller) GetJournalSchemes(ctx *gin.Context) {
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError
-// @Router /scheme/journal/{journalscheme_id} [get]
+// @Router /scheme/journal/getone/{journalscheme_id} [get]
 func (c *Controller) GetJournalScheme(ctx *gin.Context) {
 	id := ctx.Param("journalscheme_id")
 	scheme, err := model.JournalSchemeOne(id)

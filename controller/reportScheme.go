@@ -14,12 +14,16 @@ import (
 // @Tags ReportScheme
 // @Accept  json
 // @Produce  json
+// @Param offset path string true "Offset"
+// @Param limit path string true "Limit"
 // @Success 200 {array} model.ReportScheme
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError
-// @Router /scheme/report [get]
+// @Router /scheme/report/getall/{offset}/{limit} [get]
 func (c *Controller) GetReportSchemes(ctx *gin.Context) {
-	schemes, err := model.ReportSchemeAll()
+	offset := ctx.Param("offset")
+	limit := ctx.Param("limit")
+	schemes, err := model.ReportSchemeAll(offset, limit)
 	if err != nil {
 		httputils.NewError(ctx, http.StatusNotFound, err)
 		return
@@ -38,7 +42,7 @@ func (c *Controller) GetReportSchemes(ctx *gin.Context) {
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError
-// @Router /scheme/report/{reportscheme_id} [get]
+// @Router /scheme/report/getone/{reportscheme_id} [get]
 func (c *Controller) GetReportScheme(ctx *gin.Context) {
 	id := ctx.Param("reportscheme_id")
 	scheme, err := model.ReportSchemeOne(id)

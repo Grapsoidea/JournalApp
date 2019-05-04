@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strconv"
 
 	"github.com/Oxynger/JournalApp/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // ItemInfo godoc
@@ -203,8 +205,27 @@ func SomeAdd() ItemScheme {
 }
 
 //ItemSchemeAll get list item schemes godoc
-func ItemSchemeAll() ([]ItemScheme, error) {
-	cur, err := ItemSchemeCollection().Find(context.Background(), bson.D{{"deleted", false}})
+func ItemSchemeAll(offset string, limit string) ([]ItemScheme, error) {
+	offsetInt, err := strconv.ParseInt(offset, 10, 64)
+	if err != nil{
+		return nil, err
+	}
+	if offsetInt < 0{
+		return nil, ErrNegativeParam
+	} 
+	limitInt, err := strconv.ParseInt(limit, 10, 64)
+	if err != nil{
+		return nil, err
+	}
+	if limitInt < 0{
+		return nil, ErrNegativeParam
+	} 
+
+	options := options.Find()
+	options.SetLimit(limitInt)
+	options.SetSkip(offsetInt)
+
+	cur, err := ItemSchemeCollection().Find(context.Background(), bson.D{{"deleted", false}}, options)
 	if err != nil {
 		log.Println(err)
 		return nil, err

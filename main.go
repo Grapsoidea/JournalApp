@@ -44,24 +44,24 @@ func main() {
 	{
 		itemScheme := v1.Group("/scheme/item")
 		{
-			itemScheme.GET("", c.GetItemSchemes)
-			itemScheme.GET(":itemscheme_id", c.GetItemScheme)
+			itemScheme.GET("getall/:offset/:limit", c.GetItemSchemes)
+			itemScheme.GET("getone/:itemscheme_id", c.GetItemScheme)
 			itemScheme.POST("", c.NewItemScheme)
 			itemScheme.PUT(":itemscheme_id", c.UpdateItemScheme)
 			itemScheme.DELETE(":itemscheme_id", c.DeleteItemScheme)
 		}
 		journalScheme := v1.Group("/scheme/journal")
 		{
-			journalScheme.GET("", c.GetJournalSchemes)
-			journalScheme.GET(":journalscheme_id", c.GetJournalScheme)
+			journalScheme.GET("getall/:offset/:limit", c.GetJournalSchemes)
+			journalScheme.GET("getone/:journalscheme_id", c.GetJournalScheme)
 			journalScheme.POST("", c.NewJournalScheme)
 			journalScheme.PUT(":journalscheme_id", c.UpdateJournalScheme)
 			journalScheme.DELETE(":journalscheme_id", c.DeleteJournalScheme)
 		}
 		reportScheme := v1.Group("/scheme/report")
 		{
-			reportScheme.GET("", c.GetReportSchemes)
-			reportScheme.GET(":reportscheme_id", c.GetReportScheme)
+			reportScheme.GET("getall/:offset/:limit", c.GetReportSchemes)
+			reportScheme.GET("getone/:reportscheme_id", c.GetReportScheme)
 			reportScheme.POST("", c.NewReportScheme)
 			reportScheme.PUT(":reportscheme_id", c.UpdateReportScheme)
 			reportScheme.DELETE(":reportscheme_id", c.DeleteReportScheme)

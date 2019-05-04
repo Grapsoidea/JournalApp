@@ -14,12 +14,16 @@ import (
 // @Tags ItemScheme
 // @Accept  json
 // @Produce  json
+// @Param offset path string true "Offset"
+// @Param limit path string true "Limit"
 // @Success 200 {array} model.ItemScheme
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError
-// @Router /scheme/item [get]
+// @Router /scheme/item/getall/{offset}/{limit} [get]
 func (c *Controller) GetItemSchemes(ctx *gin.Context) {
-	schemes, err := model.ItemSchemeAll()
+	offset := ctx.Param("offset")
+	limit := ctx.Param("limit")
+	schemes, err := model.ItemSchemeAll(offset, limit)
 	if err != nil {
 		httputils.NewError(ctx, http.StatusNotFound, err)
 		return
@@ -38,7 +42,7 @@ func (c *Controller) GetItemSchemes(ctx *gin.Context) {
 // @Failure 400 {object} httputils.HTTPError
 // @Failure 404 {object} httputils.HTTPError
 // @Failure 500 {object} httputils.HTTPError
-// @Router /scheme/item/{itemscheme_id} [get]
+// @Router /scheme/item/getone/{itemscheme_id} [get]
 func (c *Controller) GetItemScheme(ctx *gin.Context) {
 	id := ctx.Param("itemscheme_id")
 	scheme, err := model.ItemSchemeOne(id)

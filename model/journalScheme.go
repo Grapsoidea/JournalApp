@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strconv"
 	"context"
 	"errors"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //Errors godoc
@@ -27,6 +29,7 @@ var (
 	ErrIfInvalid = errors.New("error in if field")
 	ErrComputedTypeInvalid = errors.New("Computed Type isn't exits")
 	ErrTypeInvalid = errors.New("Type isn't exits")
+	ErrNegativeParam = errors.New("param is negative")
 )
 
 // JournalIf godoc
@@ -126,8 +129,27 @@ func JournalSchemeCollection() *mongo.Collection {
 }
 
 //JournalSchemeAll get list Journak schemes godoc
-func JournalSchemeAll() ([]JournalScheme, error) {
-	cur, err := JournalSchemeCollection().Find(context.Background(), bson.D{{"deleted", false}})
+func JournalSchemeAll(offset string, limit string) ([]JournalScheme, error) {
+	offsetInt, err := strconv.ParseInt(offset, 10, 64)
+	if err != nil{
+		return nil, err
+	}
+	if offsetInt < 0{
+		return nil, ErrNegativeParam
+	} 
+	limitInt, err := strconv.ParseInt(limit, 10, 64)
+	if err != nil{
+		return nil, err
+	}
+	if limitInt < 0{
+		return nil, ErrNegativeParam
+	} 
+
+	options := options.Find()
+	options.SetLimit(limitInt)
+	options.SetSkip(offsetInt)
+
+	cur, err := JournalSchemeCollection().Find(context.Background(), bson.D{{"deleted", false}}, options)
 	if err != nil {
 		log.Println(err)
 		return nil, err
